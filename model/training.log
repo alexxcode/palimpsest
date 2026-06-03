@@ -1,0 +1,9 @@
+Train: 445 pairs  Val: 64 pairs
+Batch size: 8  Batches/epoch: 55  Patch: 256px
+Estimated time/epoch: ~160s  Total: ~13 min
+Unexpected keys (bn2.num_batches_tracked, bn2.bias, bn2.running_mean, bn2.running_var, bn2.weight, classifier.bias, classifier.weight, conv_head.weight) found while loading pretrained weights. This may be expected if model is being adapted.
+Parameters: 7.9M
+
+ Epoch      Loss       F1      IoU     Prec   Recall         LR    Time
+------------------------------------------------------------------------
+     1    0.8738   0.1465   0.0791   0.0802   0.8520   2.40e-05    262s  ← saved

@@ -1,0 +1,15 @@
+[
+  {"name": "detection_id",     "type": "STRING",    "mode": "REQUIRED"},
+  {"name": "area_name",        "type": "STRING",    "mode": "NULLABLE"},
+  {"name": "date_before",      "type": "DATE",      "mode": "REQUIRED"},
+  {"name": "date_after",       "type": "DATE",      "mode": "REQUIRED"},
+  {"name": "change_area_m2",   "type": "FLOAT64",   "mode": "NULLABLE"},
+  {"name": "change_pct",       "type": "FLOAT64",   "mode": "NULLABLE"},
+  {"name": "geometry",         "type": "GEOGRAPHY", "mode": "NULLABLE"},
+  {"name": "confidence_score", "type": "FLOAT64",   "mode": "NULLABLE"},
+  {"name": "gcs_uri_before",   "type": "STRING",    "mode": "NULLABLE"},
+  {"name": "gcs_uri_after",    "type": "STRING",    "mode": "NULLABLE"},
+  {"name": "gcs_uri_mask",     "type": "STRING",    "mode": "NULLABLE"},
+  {"name": "model_version",    "type": "STRING",    "mode": "NULLABLE"},
+  {"name": "processed_at",     "type": "TIMESTAMP", "mode": "REQUIRED"}
+]

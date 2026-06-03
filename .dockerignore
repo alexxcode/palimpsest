@@ -1,0 +1,37 @@
+# Version control
+.git/
+.gitignore
+
+# Secrets & local config
+.env
+.env.*
+credentials/
+
+# Training data — never in the image
+data/
+
+# Training / notebook scripts — not needed at runtime
+model/
+
+# Dev / test
+tests/
+.pytest_cache/
+eval/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.ruff_cache/
+
+# IDE / agent tooling / docs
+.claude/
+*.md
+
+# Infra scripts (not needed inside the container)
+infra/
+
+# The checkpoint (checkpoints/changeformer_levir.pth) IS included — baked into image

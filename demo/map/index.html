@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Palimpsest — Change Detection</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css?v=2" />
+</head>
+<body>
+  <div id="sidebar">
+    <div class="brand">
+      <h2>Palimpsest</h2>
+      <span class="subtitle">Satellite Change Detection</span>
+    </div>
+
+    <!-- ── Demo presets ─────────────────────────────────────────────── -->
+    <div class="section-label">Demo locations</div>
+    <select id="demo-select">
+      <option value="">— choose a preset —</option>
+    </select>
+
+    <!-- ── AOI ──────────────────────────────────────────────────────── -->
+    <div class="section-label">Area of interest</div>
+    <div class="hint">Shift+drag on map  <em>or</em>  enter coordinates below</div>
+
+    <div class="coords-grid">
+      <div class="coord-cell">
+        <span class="coord-lbl">W (lon min)</span>
+        <input type="number" id="c-west"  step="0.0001" placeholder="-74.0060" />
+      </div>
+      <div class="coord-cell">
+        <span class="coord-lbl">E (lon max)</span>
+        <input type="number" id="c-east"  step="0.0001" placeholder="-73.9357" />
+      </div>
+      <div class="coord-cell">
+        <span class="coord-lbl">S (lat min)</span>
+        <input type="number" id="c-south" step="0.0001" placeholder="40.6892" />
+      </div>
+      <div class="coord-cell">
+        <span class="coord-lbl">N (lat max)</span>
+        <input type="number" id="c-north" step="0.0001" placeholder="40.7484" />
+      </div>
+    </div>
+    <button id="btn-apply-coords" class="btn-secondary">Apply coordinates →</button>
+
+    <!-- ── Dates ─────────────────────────────────────────────────────── -->
+    <div class="section-label">Dates</div>
+    <label>Before <input type="date" id="date-before" value="2020-01-01" /></label>
+    <label>After  <input type="date" id="date-after"  value="2022-01-01" /></label>
+
+    <!-- ── Options ───────────────────────────────────────────────────── -->
+    <div class="section-label">Options</div>
+    <label>Max cloud cover
+      <div class="input-row">
+        <input type="range" id="cloud-pct" min="0" max="50" value="15" />
+        <span id="cloud-pct-val">15 %</span>
+      </div>
+    </label>
+    <label>Area name <input type="text" id="area-name" placeholder="optional label" /></label>
+
+    <button id="btn-detect">▶ Detect changes</button>
+
+    <!-- ── Progress ──────────────────────────────────────────────────── -->
+    <div id="status-bar" class="hidden">
+      <div id="progress-bar"><div id="progress-fill"></div></div>
+      <span id="status-text"></span>
+      <span id="elapsed"></span>
+    </div>
+
+    <!-- ── Results ───────────────────────────────────────────────────── -->
+    <div id="results-card" class="hidden">
+      <div class="results-title">Detection results</div>
+      <div class="result-row"><span class="rk">Scene before</span><span class="rv" id="r-before">—</span></div>
+      <div class="result-row"><span class="rk">Scene after</span> <span class="rv" id="r-after">—</span></div>
+      <div class="result-row"><span class="rk">Changed area</span><span class="rv" id="r-area">—</span></div>
+      <div class="result-row"><span class="rk">Change %</span>    <span class="rv" id="r-pct">—</span></div>
+      <div class="result-row"><span class="rk">Polygons</span>    <span class="rv" id="r-poly">—</span></div>
+      <div class="result-row"><span class="rk">Processing</span>  <span class="rv" id="r-time">—</span></div>
+      <div class="result-row" id="r-id-row">
+        <span class="rk">Detection ID</span>
+        <span class="rv id-pill" id="r-id" title="Click to copy">—</span>
+      </div>
+      <button id="btn-analyse" class="btn-analyse hidden">🔍 Analyse with AI</button>
+    </div>
+
+    <!-- ── AI analysis card ──────────────────────────────────────────── -->
+    <div id="analysis-card" class="hidden">
+      <div class="results-title">🤖 AI Analysis</div>
+      <div id="a-location" class="a-location">—</div>
+      <div id="a-summary" class="a-summary">—</div>
+      <div id="a-analysis" class="a-analysis">—</div>
+      <div id="a-causes" class="a-causes"></div>
+      <div class="a-confidence-row">
+        <span class="rk">Confidence</span>
+        <span id="a-confidence" class="conf-badge">—</span>
+      </div>
+      <details class="a-context-wrap" id="a-context-wrap" style="display:none">
+        <summary class="a-context-toggle">Context sources</summary>
+        <div id="a-context" class="a-context"></div>
+      </details>
+    </div>
+
+    <!-- ── Analysis progress ─────────────────────────────────────────── -->
+    <div id="analysis-status" class="hidden">
+      <div id="analysis-progress-bar"><div id="analysis-progress-fill"></div></div>
+      <span id="analysis-status-text">Querying Gemini…</span>
+    </div>
+
+    <div id="error-box" class="hidden"></div>
+  </div>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js?v=2"></script>
+</body>
+</html>

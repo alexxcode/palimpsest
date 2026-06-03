@@ -1,0 +1,31 @@
+# Files to exclude from gcloud builds submit context.
+# Keep this in sync with .dockerignore.
+
+.git/
+.gitignore
+.gcloudignore
+
+# Checkpoint — downloaded from GCS in the Cloud Build step, not uploaded
+checkpoints/
+
+# Training data & scripts
+data/
+model/
+
+# Dev / test
+tests/
+.pytest_cache/
+eval/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.ruff_cache/
+
+# Docs & IDE
+.claude/
+*.md

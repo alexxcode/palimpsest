@@ -1,0 +1,58 @@
+steps:
+  # ── 0. Download checkpoint from GCS (excluded from upload context) ─────────
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        mkdir -p checkpoints
+        gcloud storage cp gs://${_BUCKET}/checkpoints/changeformer_oscd.pth \
+                          checkpoints/changeformer_oscd.pth
+        echo "Checkpoint size: $(du -sh checkpoints/changeformer_oscd.pth)"
+
+  # ── 1. Build Docker image ─────────────────────────────────────────────────
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - -t
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_IMAGE_NAME}:${BUILD_ID}'
+      - -t
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_IMAGE_NAME}:latest'
+      - .
+
+  # ── 2. Push to Artifact Registry ─────────────────────────────────────────
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - push
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_IMAGE_NAME}'
+
+  # ── 3. Deploy to Cloud Run ────────────────────────────────────────────────
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - palimpsest-api
+      - --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_IMAGE_NAME}:${BUILD_ID}
+      - --region=${_REGION}
+      - --platform=managed
+      - --service-account=palimpsest-runner@${PROJECT_ID}.iam.gserviceaccount.com
+      - --memory=4Gi
+      - --cpu=2
+      - --timeout=3600
+      - --concurrency=4
+      - --min-instances=0
+      - --max-instances=3
+      - --allow-unauthenticated
+      - --set-env-vars=GCP_PROJECT_ID=${PROJECT_ID},GCP_REGION=${_REGION},GCS_BUCKET_NAME=${_BUCKET},EE_PROJECT=${PROJECT_ID},GEMINI_MODEL=gemini-2.5-flash
+      - --set-secrets=GEMINI_API_KEY=gemini-api-key:latest
+
+substitutions:
+  _REGION: us-central1
+  _AR_REPO: palimpsest-repo
+  _IMAGE_NAME: palimpsest-api
+  _BUCKET: palimpsest-bucket
+
+options:
+  logging: GCS_ONLY
