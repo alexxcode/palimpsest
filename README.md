@@ -909,7 +909,6 @@ Step 3 — Deploy to Cloud Run
 
 `demo/map/` — a zero-dependency Leaflet.js application served as static files by FastAPI at `/demo/`.
 
-**URL**: `https://palimpsest-api-524824658539.us-central1.run.app/demo/`
 
 ### Features
 
